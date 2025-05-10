@@ -13,6 +13,8 @@ Texto original: """${texto}"""
 `;
 
     const apiKey = process.env.OPENAI_API_KEY;
+    console.log("🔐 API Key:", apiKey);
+
 
     const respuesta = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
