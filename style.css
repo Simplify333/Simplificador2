@@ -1,0 +1,36 @@
+body {
+  font-family: sans-serif;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+textarea {
+  width: 100%;
+  height: 200px;
+}
+#output {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f0f0f0;
+  border-radius: 8px;
+  margin-top: 3rem;
+}
+
+.pdf{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#simplificar{
+  background-color: rgb(0, 56, 101);
+  color: white;
+  font-weight: 530;
+  max-width: 7rem;
+  cursor: pointer;
+}
+
+#reset{
+  margin-top: 1rem;
+  float: right;
+}
