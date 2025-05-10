@@ -41,4 +41,5 @@ Texto original: """${texto}"""
     return res.status(500).json({ error: "Error interno", detalle: error.message });
   }
 }
+console.log("✅ simplificar.js se ejecutó");
 
