@@ -6,21 +6,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "No se recibió texto" });
     }
 
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    // 👇 Esto lo imprime en los logs de Vercel
+    console.log("🔐 API Key desde entorno:", apiKey);
+
     const prompt = `
 Eres un asistente que simplifica textos legales para ciudadanos comunes. 
 Usa lenguaje claro y directo. Explica qué tiene que hacer la persona, paso a paso.
 Texto original: """${texto}"""
 `;
 
-    const apiKey = process.env.OPENAI_API_KEY;
-    console.log("🔐 API Key:", apiKey);
-
-
     const respuesta = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Authorization": \`Bearer \${apiKey}\`
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -30,11 +31,14 @@ Texto original: """${texto}"""
     });
 
     const data = await respuesta.json();
-    res.status(200).json({ resultado: data.choices?.[0]?.message?.content || "Sin respuesta" });
+
+    return res.status(200).json({
+      resultado: data.choices?.[0]?.message?.content || "Respuesta vacía"
+    });
 
   } catch (error) {
-    console.error("❌ ERROR EN API:", error);
-    res.status(500).json({ error: "Error interno", detalle: error.message });
+    console.error("❌ ERROR EN LA FUNCIÓN:", error);
+    return res.status(500).json({ error: "Error interno", detalle: error.message });
   }
 }
 
