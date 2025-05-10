@@ -12,24 +12,17 @@ export default async function handler(req, res) {
       const parsed = JSON.parse(bodyText);
       texto = parsed.texto;
     } catch {
+      console.error("❌ Error: cuerpo no es JSON válido");
       return res.status(400).json({ error: "El cuerpo no es JSON válido" });
     }
 
     if (!texto) {
-      return res.status(400).json({ error: "No se recibió texto" });
-    }
-
-    // 👇 Aquí sigue tu código original (prompt, llamada a OpenAI, etc.)
-
-
-    if (!texto) {
+      console.error("❌ Error: texto vacío o no enviado");
       return res.status(400).json({ error: "No se recibió texto" });
     }
 
     const apiKey = process.env.OPENAI_API_KEY;
-
-    // 👇 Esto lo imprime en los logs de Vercel
-    console.log("🔐 API Key desde entorno:", apiKey);
+    console.log("🔐 apiKey cargada:", !!apiKey); // solo dice si existe o no
 
     const prompt = `
 Eres un asistente que simplifica textos legales para ciudadanos comunes. 
@@ -41,7 +34,7 @@ Texto original: """${texto}"""
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": \`Bearer \${apiKey}\`
+        "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -52,14 +45,14 @@ Texto original: """${texto}"""
 
     const data = await respuesta.json();
 
+    const contenido = data.choices?.[0]?.message?.content;
+
     return res.status(200).json({
-      resultado: data.choices?.[0]?.message?.content || "Respuesta vacía"
+      resultado: contenido || "Respuesta vacía"
     });
 
   } catch (error) {
-    console.error("❌ ERROR EN LA FUNCIÓN:", error);
+    console.error("❌ ERROR INTERNO:", error);
     return res.status(500).json({ error: "Error interno", detalle: error.message });
   }
 }
-console.log("✅ simplificar.js se ejecutó");
-
