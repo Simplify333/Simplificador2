@@ -1,6 +1,26 @@
 export default async function handler(req, res) {
   try {
-    const { texto } = await req.json();
+    const bodyText = await new Promise((resolve, reject) => {
+      let data = "";
+      req.on("data", chunk => data += chunk);
+      req.on("end", () => resolve(data));
+      req.on("error", reject);
+    });
+
+    let texto;
+    try {
+      const parsed = JSON.parse(bodyText);
+      texto = parsed.texto;
+    } catch {
+      return res.status(400).json({ error: "El cuerpo no es JSON válido" });
+    }
+
+    if (!texto) {
+      return res.status(400).json({ error: "No se recibió texto" });
+    }
+
+    // 👇 Aquí sigue tu código original (prompt, llamada a OpenAI, etc.)
+
 
     if (!texto) {
       return res.status(400).json({ error: "No se recibió texto" });
